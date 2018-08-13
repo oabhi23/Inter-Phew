@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Appster</string>
+    <string name="title_activity_job_entry">JobEntry</string>
+</resources>
