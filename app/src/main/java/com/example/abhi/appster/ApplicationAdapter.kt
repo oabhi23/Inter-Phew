@@ -2,6 +2,8 @@ package com.example.abhi.appster
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Typeface
+import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,39 +13,61 @@ import com.google.firebase.database.FirebaseDatabase
 class ApplicationAdapter(val mContext: Context, val layoutId: Int, val applicationList: List<JobApplication>)
     :ArrayAdapter<JobApplication>(mContext, layoutId, applicationList){
 
+    lateinit var companyName : TextView
+    lateinit var deleteButton : ImageButton
+    lateinit var editButton : ImageButton
+    lateinit var jobApplication: JobApplication
+
+    var flag = 0
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val layoutInflater : LayoutInflater = LayoutInflater.from(mContext)
         val view : View = layoutInflater.inflate(layoutId, null)
 
-        val companyName = view.findViewById<TextView>(R.id.company)
-        val positionName = view.findViewById<TextView>(R.id.position)
+        companyName = view.findViewById(R.id.company)
+        deleteButton = view.findViewById(R.id.delete)
+        editButton = view.findViewById(R.id.edit)
 
-        val deleteButton = view.findViewById<ImageButton>(R.id.delete)
         deleteButton.visibility = View.GONE
-        val editButton = view.findViewById<ImageButton>(R.id.edit)
         editButton.visibility = View.GONE
 
         companyName.setOnClickListener {
-            deleteButton.visibility = View.VISIBLE
-            editButton.visibility = View.VISIBLE
+            showButtons()
         }
 
-        val jobApplication = applicationList[position]
+        jobApplication = applicationList[position]
 
         //display company name and position applied for
-        companyName.text = jobApplication.company + ":"
-        positionName.text = jobApplication.position
+        companyName.text = jobApplication.company + " - " + jobApplication.position
 
-        editButton.setOnClickListener{
+        var typeface : Typeface? = ResourcesCompat.getFont(this.mContext, R.font.roboto_medium)
+        companyName!!.setTypeface(typeface, Typeface.NORMAL)
+
+        editButton.setOnClickListener {
             editApplication(jobApplication)
         }
 
-        deleteButton.setOnClickListener{
+        deleteButton.setOnClickListener {
             deleteApplication(jobApplication)
         }
 
         return view
+    }
+
+    /**
+     * Show/hide edit and delete buttons on click of text
+     */
+    private fun showButtons() {
+        if (flag == 0) {
+            deleteButton.visibility = View.VISIBLE
+            editButton.visibility = View.VISIBLE
+            flag++
+        } else {
+            deleteButton.visibility = View.GONE
+            editButton.visibility = View.GONE
+            flag--
+        }
     }
 
     /**
@@ -112,7 +136,20 @@ class ApplicationAdapter(val mContext: Context, val layoutId: Int, val applicati
      */
     private fun deleteApplication(jobApplication: JobApplication) {
         val mDatabase = FirebaseDatabase.getInstance().getReference("applications")
-        mDatabase.child(jobApplication.id).removeValue() //remove reference of app id
-        Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show()
+
+        //alert dialog to confirm delete
+        val builder = AlertDialog.Builder(mContext)
+        builder.setTitle("Confirm Delete")
+        builder.setMessage("Are you sure you want to delete this application?")
+
+        builder.setPositiveButton("Yes") {dialog, which ->
+            mDatabase.child(jobApplication.id).removeValue() //remove reference of app id
+            Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show()
+        }
+
+        builder.setNegativeButton("No") {dialog, which -> }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 }

@@ -31,7 +31,6 @@ class JobEntry : AppCompatActivity() {
     lateinit var saveButton : Button
     lateinit var interviewCheckBox : CheckBox
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_entry)
