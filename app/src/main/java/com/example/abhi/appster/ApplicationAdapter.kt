@@ -13,30 +13,19 @@ import com.google.firebase.database.FirebaseDatabase
 class ApplicationAdapter(val mContext: Context, val layoutId: Int, val applicationList: List<JobApplication>)
     :ArrayAdapter<JobApplication>(mContext, layoutId, applicationList){
 
-    lateinit var companyName : TextView
-    lateinit var deleteButton : ImageButton
-    lateinit var editButton : ImageButton
-    lateinit var jobApplication: JobApplication
-
-    var flag = 0
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val layoutInflater : LayoutInflater = LayoutInflater.from(mContext)
         val view : View = layoutInflater.inflate(layoutId, null)
 
-        companyName = view.findViewById(R.id.company)
-        deleteButton = view.findViewById(R.id.delete)
-        editButton = view.findViewById(R.id.edit)
+        var companyName = view.findViewById<TextView>(R.id.company)
+        var deleteButton = view.findViewById<ImageButton>(R.id.delete)
+        var editButton = view.findViewById<ImageButton>(R.id.edit)
 
-        deleteButton.visibility = View.GONE
-        editButton.visibility = View.GONE
+        deleteButton.visibility = View.INVISIBLE
+        editButton.visibility = View.INVISIBLE
 
-        companyName.setOnClickListener {
-            showButtons()
-        }
-
-        jobApplication = applicationList[position]
+        var jobApplication = applicationList[position]
 
         //display company name and position applied for
         companyName.text = jobApplication.company + " - " + jobApplication.position
@@ -52,22 +41,20 @@ class ApplicationAdapter(val mContext: Context, val layoutId: Int, val applicati
             deleteApplication(jobApplication)
         }
 
-        return view
-    }
-
-    /**
-     * Show/hide edit and delete buttons on click of text
-     */
-    private fun showButtons() {
-        if (flag == 0) {
-            deleteButton.visibility = View.VISIBLE
-            editButton.visibility = View.VISIBLE
-            flag++
-        } else {
-            deleteButton.visibility = View.GONE
-            editButton.visibility = View.GONE
-            flag--
+        var flag = 0
+        companyName.setOnClickListener {
+            if (flag == 0) {
+                deleteButton.visibility = View.VISIBLE
+                editButton.visibility = View.VISIBLE
+                flag++
+            } else {
+                deleteButton.visibility = View.GONE
+                editButton.visibility = View.GONE
+                flag--
+            }
         }
+
+        return view
     }
 
     /**

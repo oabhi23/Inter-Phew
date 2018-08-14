@@ -97,6 +97,9 @@ class JobEntry : AppCompatActivity() {
         }
     }
 
+    /**
+     * Add to database
+     */
     private fun loadDatabase(firebaseDatabase: DatabaseReference, date: String, company: String, pos: String, loc: String,
                      time: String, stat: String, cont: String, contInfo: String, follow: String, note: String){
 
