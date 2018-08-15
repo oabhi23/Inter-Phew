@@ -30,7 +30,7 @@ class ApplicationListView : AppCompatActivity() {
      * Retrieves applications and uses ApplicationAdapter class to display a view of job application entries
      */
     private fun retrieveApplications() {
-        ref.orderByChild("date").startAt("2018-08-13").endAt("2018-08-15").
+        ref.orderByChild("date").startAt("2018-08-12").endAt("2018-08-15").
                 addValueEventListener(object : ValueEventListener{
 
             override fun onCancelled(p0: DatabaseError?) {
@@ -40,12 +40,14 @@ class ApplicationListView : AppCompatActivity() {
                 if (p0!!.exists()) {
                     appList.clear()
                     for (i in p0.children) {
-                        ref.orderByChild("date").startAt("2018-08-13").endAt("2018-08-15")
                         val app : JobApplication? = i.getValue(JobApplication::class.java)
                         appList.add(app!!)
                     }
 
-                    val adapter = ApplicationAdapter(this@ApplicationListView, R.layout.application, appList)
+                    val appListRead = appList as List<JobApplication>
+                    val appListReversed = appListRead.asReversed() //most recent applications show first
+
+                    val adapter = ApplicationAdapter(this@ApplicationListView, R.layout.application, appListReversed)
                     listView.adapter = adapter
                 }
             }
