@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.widget.ListView
 import com.google.firebase.database.*
 
+/**
+ * Displays job applications in list view
+ */
+
 class ApplicationListView : AppCompatActivity() {
 
     lateinit var ref: DatabaseReference
@@ -26,7 +30,9 @@ class ApplicationListView : AppCompatActivity() {
      * Retrieves applications and uses ApplicationAdapter class to display a view of job application entries
      */
     private fun retrieveApplications() {
-        ref.addValueEventListener(object : ValueEventListener{
+        ref.orderByChild("date").startAt("2018-08-13").endAt("2018-08-15").
+                addValueEventListener(object : ValueEventListener{
+
             override fun onCancelled(p0: DatabaseError?) {
                 //empty
             }
@@ -34,6 +40,7 @@ class ApplicationListView : AppCompatActivity() {
                 if (p0!!.exists()) {
                     appList.clear()
                     for (i in p0.children) {
+                        ref.orderByChild("date").startAt("2018-08-13").endAt("2018-08-15")
                         val app : JobApplication? = i.getValue(JobApplication::class.java)
                         appList.add(app!!)
                     }

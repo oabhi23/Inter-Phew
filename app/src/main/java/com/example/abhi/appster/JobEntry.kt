@@ -79,7 +79,7 @@ class JobEntry : AppCompatActivity() {
         saveButton.setOnClickListener{
             //get current day
             val today = Calendar.getInstance()
-            val date = SimpleDateFormat().format(today.time)
+            val date = SimpleDateFormat("yyyy-MM-dd").format(today.time)
 
             //convert edittext to string values
             val company = companyName.text.toString()
